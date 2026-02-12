@@ -400,6 +400,55 @@
     </div>
 
     <script>
+        // --- הדבק את החלק הזה בראש הסקריפט ---
+    
+        // תיקון למערכת הזיכרון (מתקן את הקריסה)
+        window.storage = {
+            get: async (key) => {
+                const value = localStorage.getItem(key);
+                return value ? { value: value } : null;
+            },
+            set: async (key, value) => {
+                localStorage.setItem(key, value);
+            },
+            remove: async (key) => {
+                localStorage.removeItem(key);
+            }
+        };
+
+        // תיקון לשמירת התחברות (כדי שלא יתנתק ברענון)
+        const originalInitTokenClient = google.accounts.oauth2.initTokenClient;
+        google.accounts.oauth2.initTokenClient = function(config) {
+            // שומרים את ה-callback המקורי
+            const originalCallback = config.callback;
+            
+            // עוטפים אותו כדי לשמור בזיכרון שהתחברנו
+            config.callback = async (resp) => {
+                if (resp.error === undefined) {
+                    localStorage.setItem('isLoggedIn', 'true');
+                }
+                if (originalCallback) await originalCallback(resp);
+            };
+            return originalInitTokenClient.call(this, config);
+        };
+
+        // בדיקה אוטומטית אם המשתמש כבר מחובר בעבר
+        window.addEventListener('load', () => {
+            if (localStorage.getItem('isLoggedIn') === 'true') {
+                // מחכים שהספרייה תיטען ואז מנסים לשחזר
+                const checkGapi = setInterval(() => {
+                    if (typeof gapi !== 'undefined' && typeof tokenClient !== 'undefined') {
+                        clearInterval(checkGapi);
+                        try {
+                            // רענון הטוקן בשקט
+                            tokenClient.requestAccessToken({prompt: ''});
+                        } catch (e) { console.log("Auto login retry", e); }
+                    }
+                }, 500);
+            }
+        });
+
+    // -------------------------------------------
         // Google API Configuration - REPLACE WITH YOUR CLIENT ID
         const CLIENT_ID = '817293587535-0tkfkinaosrmdoe47auo7sbj5pcmei4u.apps.googleusercontent.com';
         const API_KEY = 'AIzaSyCE5TFpTvO-28qY8aoph6JdEyeHVAH6wBQ';
@@ -471,7 +520,7 @@
         async function updateSignInStatus(isSignedIn) {
             if (isSignedIn) {
                 const user = await gapi.client.request({
-                    path: 'https://www.googleapis.com/oauth2/v1/userinfo'
+                    path: 'https://www.googleapis.com/oauth2/v3/userinfo'
                 });
                 
                 currentUser = {
