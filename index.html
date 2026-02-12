@@ -400,9 +400,7 @@
     </div>
 
     <script>
-        // --- הדבק את החלק הזה בראש הסקריפט ---
-    
-        // תיקון למערכת הזיכרון (מתקן את הקריסה)
+
         window.storage = {
             get: async (key) => {
                 const value = localStorage.getItem(key);
@@ -414,22 +412,6 @@
             remove: async (key) => {
                 localStorage.removeItem(key);
             }
-        };
-
-        // תיקון לשמירת התחברות (כדי שלא יתנתק ברענון)
-        const originalInitTokenClient = google.accounts.oauth2.initTokenClient;
-        google.accounts.oauth2.initTokenClient = function(config) {
-            // שומרים את ה-callback המקורי
-            const originalCallback = config.callback;
-            
-            // עוטפים אותו כדי לשמור בזיכרון שהתחברנו
-            config.callback = async (resp) => {
-                if (resp.error === undefined) {
-                    localStorage.setItem('isLoggedIn', 'true');
-                }
-                if (originalCallback) await originalCallback(resp);
-            };
-            return originalInitTokenClient.call(this, config);
         };
 
         // בדיקה אוטומטית אם המשתמש כבר מחובר בעבר
@@ -452,7 +434,7 @@
         // Google API Configuration - REPLACE WITH YOUR CLIENT ID
         const CLIENT_ID = '817293587535-0tkfkinaosrmdoe47auo7sbj5pcmei4u.apps.googleusercontent.com';
         const API_KEY = 'AIzaSyCE5TFpTvO-28qY8aoph6JdEyeHVAH6wBQ';
-        const DISCOVERY_DOC = 'https://www.googleapis.com/discovery/v3/apis/calendar/v3/rest';
+        const DISCOVERY_DOC = 'https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest';
         const SCOPES = 'https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email';
 
         let tokenClient;
