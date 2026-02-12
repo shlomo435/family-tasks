@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>משימות ביתיות - שלמה ואהבת חייו</title>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="https://apis.google.com/js/api.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .user-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+        #signInButton, #signOutButton {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        #signInButton:hover, #signOutButton:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            flex: 1;
+            background: white;
+            border: none;
+            padding: 15px;
+            border-radius: 15px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .content {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            min-height: 400px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"], textarea, input[type="datetime-local"] {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+
+        input[type="text"]:focus, textarea:focus, input[type="datetime-local"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        button.add-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        button.add-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .item:hover {
+            border-color: #667eea;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.1);
+        }
+
+        .item.completed {
+            opacity: 0.6;
+            text-decoration: line-through;
+        }
+
+        .checkbox {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            accent-color: #667eea;
+            margin-top: 2px;
+        }
+
+        .item-content {
+            flex: 1;
+        }
+
+        .item-title {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 5px;
+            color: #2d3748;
+        }
+
+        .item-note {
+            font-size: 14px;
+            color: #718096;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        .item-date {
+            font-size: 13px;
+            color: #667eea;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .item-meta {
+            font-size: 12px;
+            color: #a0aec0;
+            margin-top: 5px;
+        }
+
+        .delete-btn {
+            background: #fc8181;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .delete-btn:hover {
+            background: #f56565;
+            transform: scale(1.05);
+        }
+
+        .calendar-btn {
+            background: #48bb78;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-right: 5px;
+            transition: all 0.3s;
+        }
+
+        .calendar-btn:hover {
+            background: #38a169;
+        }
+
+        .calendar-btn.synced {
+            background: #90cdf4;
+            cursor: default;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #a0aec0;
+        }
+
+        .empty-state svg {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 15px;
+            opacity: 0.3;
+        }
+
+        .date-task-toggle {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .toggle-btn {
+            flex: 1;
+            background: #e0e0e0;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .toggle-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .task-date-input {
+            display: none;
+        }
+
+        .task-date-input.show {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        #authSection {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        #appContent {
+            display: none;
+        }
+
+        .sync-status {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-right: 8px;
+        }
+
+        .sync-status.synced {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+
+        .sync-status.pending {
+            background: #feebc8;
+            color: #744210;
+        }
+
+        @media (max-width: 600px) {
+            .input-group {
+                flex-direction: column;
+            }
+
+            button.add-btn {
+                width: 100%;
+            }
+
+            .tabs {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📋 משימות ביתיות</h1>
+            <p style="color: #718096; margin-top: 5px;">ניהול משותף של משימות וקניות</p>
+            
+            <div id="authSection">
+                <p style="margin-bottom: 15px; color: #4a5568;">התחבר עם חשבון Google שלך</p>
+                <button id="signInButton">🔐 התחבר עם Google</button>
+            </div>
+
+            <div id="userSection" style="display: none;">
+                <div class="user-info">
+                    <img id="userPhoto" src="" alt="User">
+                    <div>
+                        <div id="userName" style="font-weight: 600;"></div>
+                        <div id="userEmail" style="font-size: 12px; color: #718096;"></div>
+                    </div>
+                </div>
+                <button id="signOutButton" style="margin-top: 10px;">התנתק</button>
+            </div>
+        </div>
+
+        <div id="appContent">
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('shopping')">🛒 קניות</button>
+                <button class="tab" onclick="switchTab('tasks')">✅ מטלות</button>
+            </div>
+
+            <div class="content">
+                <!-- Shopping List -->
+                <div id="shoppingContent">
+                    <div class="input-group">
+                        <input type="text" id="shoppingInput" placeholder="הוסף מוצר לרשימת הקניות...">
+                        <button class="add-btn" onclick="addShoppingItem()">הוסף</button>
+                    </div>
+                    <div id="shoppingList"></div>
+                </div>
+
+                <!-- Tasks List -->
+                <div id="tasksContent" style="display: none;">
+                    <div class="date-task-toggle">
+                        <button class="toggle-btn active" onclick="toggleTaskType('general')">כללי</button>
+                        <button class="toggle-btn" onclick="toggleTaskType('dated')">עם תאריך</button>
+                    </div>
+
+                    <div class="task-date-input" id="dateInputSection">
+                        <input type="datetime-local" id="taskDate" placeholder="תאריך ושעה">
+                    </div>
+
+                    <div class="input-group">
+                        <input type="text" id="taskInput" placeholder="הוסף משימה...">
+                        <button class="add-btn" onclick="addTask()">הוסף</button>
+                    </div>
+
+                    <div class="input-group">
+                        <textarea id="taskNote" placeholder="הערה (אופציונלי)"></textarea>
+                    </div>
+
+                    <div id="tasksList"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Google API Configuration - REPLACE WITH YOUR CLIENT ID
+        const CLIENT_ID = '817293587535-0tkfkinaosrmdoe47auo7sbj5pcmei4u.apps.googleusercontent.com';
+        const API_KEY = 'AIzaSyCE5TFpTvO-28qY8aoph6JdEyeHVAH6wBQ';
+        const DISCOVERY_DOC = 'https://www.googleapis.com/discovery/v3/apis/calendar/v3/rest';
+        const SCOPES = 'https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email';
+
+        let tokenClient;
+        let gapiInited = false;
+        let gisInited = false;
+        let currentUser = null;
+        let currentTaskType = 'general';
+
+        // Initialize Google API
+        function gapiLoaded() {
+            gapi.load('client', initializeGapiClient);
+        }
+
+        async function initializeGapiClient() {
+            await gapi.client.init({
+                apiKey: API_KEY,
+                discoveryDocs: [DISCOVERY_DOC],
+            });
+            gapiInited = true;
+            maybeEnableButtons();
+        }
+
+        function gisLoaded() {
+            tokenClient = google.accounts.oauth2.initTokenClient({
+                client_id: CLIENT_ID,
+                scope: SCOPES,
+                callback: '', // defined later
+            });
+            gisInited = true;
+            maybeEnableButtons();
+        }
+
+        function maybeEnableButtons() {
+            if (gapiInited && gisInited) {
+                document.getElementById('signInButton').style.visibility = 'visible';
+            }
+        }
+
+        // Sign in
+        document.getElementById('signInButton').onclick = () => {
+            tokenClient.callback = async (resp) => {
+                if (resp.error !== undefined) {
+                    throw (resp);
+                }
+                await updateSignInStatus(true);
+            };
+
+            if (gapi.client.getToken() === null) {
+                tokenClient.requestAccessToken({prompt: 'consent'});
+            } else {
+                tokenClient.requestAccessToken({prompt: ''});
+            }
+        };
+
+        // Sign out
+        document.getElementById('signOutButton').onclick = () => {
+            const token = gapi.client.getToken();
+            if (token !== null) {
+                google.accounts.oauth2.revoke(token.access_token);
+                gapi.client.setToken('');
+                updateSignInStatus(false);
+            }
+        };
+
+        async function updateSignInStatus(isSignedIn) {
+            if (isSignedIn) {
+                const user = await gapi.client.request({
+                    path: 'https://www.googleapis.com/oauth2/v1/userinfo'
+                });
+                
+                currentUser = {
+                    email: user.result.email,
+                    name: user.result.name,
+                    picture: user.result.picture
+                };
+
+                document.getElementById('authSection').style.display = 'none';
+                document.getElementById('userSection').style.display = 'block';
+                document.getElementById('appContent').style.display = 'block';
+                
+                document.getElementById('userName').textContent = currentUser.name;
+                document.getElementById('userEmail').textContent = currentUser.email;
+                document.getElementById('userPhoto').src = currentUser.picture;
+
+                loadData();
+            } else {
+                currentUser = null;
+                document.getElementById('authSection').style.display = 'block';
+                document.getElementById('userSection').style.display = 'none';
+                document.getElementById('appContent').style.display = 'none';
+            }
+        }
+
+        // Storage functions
+        async function saveData(key, data) {
+            try {
+                await window.storage.set(key, JSON.stringify(data), true);
+            } catch (error) {
+                console.error('Error saving data:', error);
+            }
+        }
+
+        async function loadData() {
+            try {
+                const shoppingData = await window.storage.get('shopping-list', true);
+                const tasksData = await window.storage.get('tasks-list', true);
+
+                if (shoppingData && shoppingData.value) {
+                    const items = JSON.parse(shoppingData.value);
+                    renderShoppingList(items);
+                } else {
+                    renderShoppingList([]);
+                }
+
+                if (tasksData && tasksData.value) {
+                    const items = JSON.parse(tasksData.value);
+                    renderTasksList(items);
+                } else {
+                    renderTasksList([]);
+                }
+            } catch (error) {
+                console.error('Error loading data:', error);
+                renderShoppingList([]);
+                renderTasksList([]);
+            }
+        }
+
+        // Shopping list functions
+        async function addShoppingItem() {
+            const input = document.getElementById('shoppingInput');
+            const text = input.value.trim();
+            
+            if (!text) return;
+
+            try {
+                const result = await window.storage.get('shopping-list', true);
+                const items = result && result.value ? JSON.parse(result.value) : [];
+                
+                items.push({
+                    id: Date.now(),
+                    text: text,
+                    completed: false,
+                    addedBy: currentUser.email,
+                    addedAt: new Date().toISOString()
+                });
+
+                await saveData('shopping-list', items);
+                renderShoppingList(items);
+                input.value = '';
+            } catch (error) {
+                console.error('Error adding shopping item:', error);
+            }
+        }
+
+        async function toggleShoppingItem(id) {
+            try {
+                const result = await window.storage.get('shopping-list', true);
+                const items = JSON.parse(result.value);
+                const item = items.find(i => i.id === id);
+                if (item) {
+                    item.completed = !item.completed;
+                    await saveData('shopping-list', items);
+                    renderShoppingList(items);
+                }
+            } catch (error) {
+                console.error('Error toggling item:', error);
+            }
+        }
+
+        async function deleteShoppingItem(id) {
+            try {
+                const result = await window.storage.get('shopping-list', true);
+                const items = JSON.parse(result.value);
+                const filtered = items.filter(i => i.id !== id);
+                await saveData('shopping-list', filtered);
+                renderShoppingList(filtered);
+            } catch (error) {
+                console.error('Error deleting item:', error);
+            }
+        }
+
+        function renderShoppingList(items) {
+            const container = document.getElementById('shoppingList');
+            
+            if (items.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                        </svg>
+                        <p>רשימת הקניות ריקה</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = items.map(item => `
+                <div class="item ${item.completed ? 'completed' : ''}">
+                    <input type="checkbox" class="checkbox" ${item.completed ? 'checked' : ''} 
+                           onchange="toggleShoppingItem(${item.id})">
+                    <div class="item-content">
+                        <div class="item-title">${item.text}</div>
+                        <div class="item-meta">נוסף על ידי: ${item.addedBy}</div>
+                    </div>
+                    <button class="delete-btn" onclick="deleteShoppingItem(${item.id})">מחק</button>
+                </div>
+            `).join('');
+        }
+
+        // Tasks functions
+        function toggleTaskType(type) {
+            currentTaskType = type;
+            
+            const buttons = document.querySelectorAll('.toggle-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            const dateSection = document.getElementById('dateInputSection');
+            if (type === 'dated') {
+                dateSection.classList.add('show');
+            } else {
+                dateSection.classList.remove('show');
+                document.getElementById('taskDate').value = '';
+            }
+        }
+
+        async function addTask() {
+            const input = document.getElementById('taskInput');
+            const noteInput = document.getElementById('taskNote');
+            const dateInput = document.getElementById('taskDate');
+            
+            const text = input.value.trim();
+            if (!text) return;
+
+            try {
+                const result = await window.storage.get('tasks-list', true);
+                const tasks = result && result.value ? JSON.parse(result.value) : [];
+                
+                const newTask = {
+                    id: Date.now(),
+                    text: text,
+                    note: noteInput.value.trim(),
+                    completed: false,
+                    type: currentTaskType,
+                    date: currentTaskType === 'dated' ? dateInput.value : null,
+                    addedBy: currentUser.email,
+                    addedAt: new Date().toISOString(),
+                    calendarEventId: null
+                };
+
+                tasks.push(newTask);
+                await saveData('tasks-list', tasks);
+                renderTasksList(tasks);
+                
+                input.value = '';
+                noteInput.value = '';
+                dateInput.value = '';
+            } catch (error) {
+                console.error('Error adding task:', error);
+            }
+        }
+
+        async function toggleTask(id) {
+            try {
+                const result = await window.storage.get('tasks-list', true);
+                const tasks = JSON.parse(result.value);
+                const task = tasks.find(t => t.id === id);
+                if (task) {
+                    task.completed = !task.completed;
+                    await saveData('tasks-list', tasks);
+                    renderTasksList(tasks);
+                }
+            } catch (error) {
+                console.error('Error toggling task:', error);
+            }
+        }
+
+        async function deleteTask(id) {
+            try {
+                const result = await window.storage.get('tasks-list', true);
+                const tasks = JSON.parse(result.value);
+                const filtered = tasks.filter(t => t.id !== id);
+                await saveData('tasks-list', filtered);
+                renderTasksList(filtered);
+            } catch (error) {
+                console.error('Error deleting task:', error);
+            }
+        }
+
+        async function syncToCalendar(taskId) {
+            try {
+                const result = await window.storage.get('tasks-list', true);
+                const tasks = JSON.parse(result.value);
+                const task = tasks.find(t => t.id === taskId);
+                
+                if (!task || !task.date) return;
+
+                const event = {
+                    summary: task.text,
+                    description: task.note || 'משימה מאפליקציית המשפחה',
+                    start: {
+                        dateTime: new Date(task.date).toISOString(),
+                        timeZone: 'Asia/Jerusalem'
+                    },
+                    end: {
+                        dateTime: new Date(new Date(task.date).getTime() + 60*60*1000).toISOString(),
+                        timeZone: 'Asia/Jerusalem'
+                    },
+                    reminders: {
+                        useDefault: false,
+                        overrides: [
+                            {method: 'popup', minutes: 30},
+                            {method: 'popup', minutes: 10}
+                        ]
+                    }
+                };
+
+                const response = await gapi.client.calendar.events.insert({
+                    calendarId: 'primary',
+                    resource: event
+                });
+
+                task.calendarEventId = response.result.id;
+                await saveData('tasks-list', tasks);
+                renderTasksList(tasks);
+                
+                alert('המשימה נוספה ללוח השנה בהצלחה! ✅');
+            } catch (error) {
+                console.error('Error syncing to calendar:', error);
+                alert('שגיאה בהוספה ללוח השנה: ' + error.message);
+            }
+        }
+
+        function renderTasksList(tasks) {
+            const container = document.getElementById('tasksList');
+            
+            if (tasks.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                        </svg>
+                        <p>אין משימות</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = tasks.map(task => {
+                const dateStr = task.date ? new Date(task.date).toLocaleString('he-IL') : '';
+                const calendarBtn = task.date && !task.calendarEventId 
+                    ? `<button class="calendar-btn" onclick="syncToCalendar(${task.id})">📅 הוסף ליומן</button>`
+                    : task.calendarEventId 
+                    ? `<span class="sync-status synced">✓ ביומן</span>`
+                    : '';
+
+                return `
+                    <div class="item ${task.completed ? 'completed' : ''}">
+                        <input type="checkbox" class="checkbox" ${task.completed ? 'checked' : ''} 
+                               onchange="toggleTask(${task.id})">
+                        <div class="item-content">
+                            <div class="item-title">${task.text}</div>
+                            ${task.note ? `<div class="item-note">💭 ${task.note}</div>` : ''}
+                            ${task.date ? `<div class="item-date">🕐 ${dateStr}</div>` : ''}
+                            <div class="item-meta">
+                                ${calendarBtn}
+                                נוסף על ידי: ${task.addedBy}
+                            </div>
+                        </div>
+                        <button class="delete-btn" onclick="deleteTask(${task.id})">מחק</button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Tab switching
+        function switchTab(tab) {
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+
+            document.getElementById('shoppingContent').style.display = tab === 'shopping' ? 'block' : 'none';
+            document.getElementById('tasksContent').style.display = tab === 'tasks' ? 'block' : 'none';
+        }
+
+        // Enter key support
+        document.getElementById('shoppingInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') addShoppingItem();
+        });
+
+        document.getElementById('taskInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') addTask();
+        });
+
+        // Initialize Google API when page loads
+        window.onload = () => {
+            gapiLoaded();
+            gisLoaded();
+        };
+    </script>
+</body>
+</html>
