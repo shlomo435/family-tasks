@@ -519,6 +519,7 @@
 
         async function updateSignInStatus(isSignedIn) {
             if (isSignedIn) {
+                localStorage.setItem('isLoggedIn', 'true');
                 const user = await gapi.client.request({
                     path: 'https://www.googleapis.com/oauth2/v3/userinfo'
                 });
